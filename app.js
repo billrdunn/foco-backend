@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require('path');
 const mongoose = require("mongoose");
 const config = require("./utils/config");
 require("express-async-errors");
@@ -23,6 +24,14 @@ mongoose
   .catch((error) => {
     logger.error("error connecting to MongoDB:", error.message);
   });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
+app.get('*', (request, response) => {
+	response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 app.use(cors());
 // Check if the build dir contains a file corresponding to the request's address and if so, return it.
