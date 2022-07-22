@@ -43,10 +43,10 @@ if (process.env.NODE_ENV === "test") {
   app.use("/api/testing", testingRouter);
 }
 
+// Allows deployed app to access routes
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("build"));
 }
-
 app.get('*', (request, response) => {
 	response.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
