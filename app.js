@@ -43,11 +43,6 @@ if (process.env.NODE_ENV === "test") {
   app.use("/api/testing", testingRouter);
 }
 
-// Use the middleware after the routes so it is
-// only called if no route handles the request
-app.use(middleware.unknownEndpoint);
-app.use(middleware.errorHandler);
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("build"));
 }
@@ -55,5 +50,11 @@ if (process.env.NODE_ENV === "production") {
 app.get('*', (request, response) => {
 	response.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+// Use the middleware after the routes so it is
+// only called if no route handles the request
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
 
 module.exports = app;
