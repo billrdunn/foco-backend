@@ -25,14 +25,6 @@ mongoose
     logger.error("error connecting to MongoDB:", error.message);
   });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("build"));
-}
-
-app.get('*', (request, response) => {
-	response.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 app.use(cors());
 // Check if the build dir contains a file corresponding to the request's address and if so, return it.
 app.use(express.static("build"));
@@ -55,5 +47,13 @@ if (process.env.NODE_ENV === "test") {
 // only called if no route handles the request
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("build"));
+}
+
+app.get('*', (request, response) => {
+	response.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 module.exports = app;
