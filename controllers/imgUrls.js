@@ -16,9 +16,19 @@ imgUrlRouter.get("/:id", async (req, res) => {
 
 imgUrlRouter.post("/", async (req, res) => {
   const imgUrl = new ImgUrl(req.body);
-  console.log('express post imgUrl :>> ', imgUrl)
+  console.log("express post imgUrl :>> ", imgUrl);
   const savedImgUrl = await imgUrl.save();
   res.json(savedImgUrl);
+});
+
+imgUrlRouter.delete("/:id", async (request, response) => {
+  const imgUrl = await ImgUrl.findById(request.params.id);
+  if (!imgUrl) {
+    return response.status(400).json({ error: "requested blog to delete does not exist" });
+  }
+  const res = await ImgUrl.findByIdAndRemove(request.params.id);
+
+  return res;
 });
 
 module.exports = imgUrlRouter;
