@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const path = require('path');
+const path = require("path");
 const mongoose = require("mongoose");
+const sslRedirect = require("heroku-ssl-redirect").default;
 const config = require("./utils/config");
 require("express-async-errors");
 
@@ -25,6 +26,7 @@ mongoose
     logger.error("error connecting to MongoDB:", error.message);
   });
 
+app.use(sslRedirect());
 app.use(cors());
 // Check if the build dir contains a file corresponding to the request's address and if so, return it.
 app.use(express.static("build"));
@@ -47,14 +49,13 @@ if (process.env.NODE_ENV === "test") {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("build"));
 }
-app.get('*', (request, response) => {
-	response.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get("*", (request, response) => {
+  response.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 // Use the middleware after the routes so it is
 // only called if no route handles the request
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
-
 
 module.exports = app;
