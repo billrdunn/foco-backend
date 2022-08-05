@@ -21,14 +21,16 @@ imgUrlRouter.post("/", async (req, res) => {
   res.json(savedImgUrl);
 });
 
-imgUrlRouter.delete("/:id", async (request, response) => {
-  const imgUrl = await ImgUrl.findById(request.params.id);
+imgUrlRouter.delete("/:id", async (req, res) => {
+  console.log("in delete");
+  const imgUrl = await ImgUrl.findById(req.params.id);
+  console.log("imgUrl :>> ", imgUrl);
   if (!imgUrl) {
-    return response.status(400).json({ error: "requested blog to delete does not exist" });
+    res.status(404).json({ error: "requested blog to delete does not exist" });
+  } else {
+    await ImgUrl.findByIdAndRemove(req.params.id);
+    res.status(204).end();
   }
-  const res = await ImgUrl.findByIdAndRemove(request.params.id);
-
-  return res;
 });
 
 module.exports = imgUrlRouter;
